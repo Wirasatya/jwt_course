@@ -1,19 +1,22 @@
 const express = require("express");
 const app = express();
 const jwt = require("jsonwebtoken");
+const Cors = require("cors");
+
 app.use(express.json());
+app.use(Cors());
 
 const users = [
   {
     id: "1",
-    username: "john",
-    password: "John0908",
+    username: "wira",
+    password: "wira1234",
     isAdmin: true,
   },
   {
     id: "2",
-    username: "jane",
-    password: "Jane0908",
+    username: "saya",
+    password: "saya1234",
     isAdmin: false,
   },
 ];
@@ -29,6 +32,7 @@ app.post("/api/refresh", (req, res) => {
   if (!refreshTokens.includes(refreshToken)) {
     return res.status(403).json("Refresh token is not valid!");
   }
+  //if everything is ok, create new access token, refresh token and send to user
   jwt.verify(refreshToken, "myRefreshSecretKey", (err, user) => {
     err && console.log(err);
     refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
@@ -43,8 +47,6 @@ app.post("/api/refresh", (req, res) => {
       refreshToken: newRefreshToken,
     });
   });
-
-  //if everything is ok, create new access token, refresh token and send to user
 });
 
 const generateAccessToken = (user) => {
